@@ -95,6 +95,7 @@ void makeAMove (mat & grid, const maPosition & pos, const char & direction){
 }
 
 int main() {
+    srand(time(0));
     maPosition pos;
     char direction;
     mat grid;
