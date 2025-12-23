@@ -107,5 +107,6 @@ int main() {
     cout << "choisissez la direction de déplacement (haut = z, bas = s, gauche = q, droite = d" << endl;
     cin >> direction;
     makeAMove(grid, pos , direction);
+    DisplayGrid(grid);
     return 0;
 }
