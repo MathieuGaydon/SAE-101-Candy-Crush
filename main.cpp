@@ -32,8 +32,9 @@ struct maPosition {
 };
 
 const unsigned KNbCandies = 6;
+const unsigned KImpossible = 0;
 
-void DisplayGrid(const mat & grid) {
+void displayGrid(const mat & grid) {
     clearScreen();
     couleur(KReset);
 
@@ -65,7 +66,7 @@ void DisplayGrid(const mat & grid) {
     cout << endl;
 }
 
-void InitGrid(mat & grid, const size_t & taille) {
+void initGrid(mat & grid, const size_t & taille) {
     grid.resize(taille);
     for (size_t i = 0; i < taille; ++i) {
         grid[i].resize(taille);
@@ -94,20 +95,141 @@ void makeAMove (mat & grid, const maPosition & pos, const char & direction){
     }
 }
 
+bool atLeastThreeInAColumn (const mat &grid, maPosition & pos, unsigned & howMany){
+    unsigned n = grid.size();
+
+    for (unsigned j = 0; j < n; ++j) {
+        for (unsigned i = 0; i < n ; ++i){
+            unsigned value = grid[i][j];
+            if (value != KImpossible){
+                unsigned count = 1;
+                unsigned k = i + 1;
+                while (k < n && grid[k][j] == value){
+                    ++count;
+                    ++k;
+                }
+                if (count >= 3){
+                    pos.abs = i;
+                    pos.ord = j;
+                    howMany = count;
+                    return true;
+                }
+                i = k - 1;
+            }
+        }
+    }
+    return false;
+}
+
+bool atLeastThreeInARow (const mat &grid, maPosition & pos, unsigned & howMany){
+    unsigned n = grid.size();
+
+    for (unsigned i = 0; i < n; ++i) {
+        for (unsigned j = 0; j < n ; ++j){
+            unsigned value = grid[i][j];
+            if (value != KImpossible){
+                unsigned count = 1;
+                unsigned k = j + 1;
+                while (k < n && grid[i][k] == value){
+                    ++count;
+                    ++k;
+                }
+                if (count >= 3){
+                    pos.abs = i;
+                    pos.ord = j;
+                    howMany = count;
+                    return true;
+                }
+                j = k - 1;
+            }
+        }
+    }
+    return false;
+}
+
+void removalInColumn (mat &grid, const maPosition &pos, unsigned howMany) {
+    unsigned col = pos.ord;
+
+    for (unsigned i = pos.abs; i < pos.abs + howMany; ++i){
+        grid[i][col] = KImpossible;
+    }
+
+    for (unsigned i = pos.abs + howMany; i < grid.size(); ++i) {
+        unsigned k = i;
+        while (k > 0 && grid[k - 1][col] == KImpossible) {
+            swap(grid[k][col], grid[k - 1][col]);
+            --k;
+        }
+    }
+}
+
+void removalInRow(mat & grid, const maPosition & pos, unsigned howMany){
+    for (unsigned j = 0; j < howMany; ++j) {
+        maPosition p;
+        p.abs = pos.abs;
+        p.ord = pos.ord + j;
+
+        removalInColumn(grid, p, 1);
+    }
+}
+
 int main() {
     srand(time(0));
+
+    const unsigned taille = 5;
+    const unsigned maxCoups = 10;
+
+    mat grid;
     maPosition pos;
     char direction;
-    mat grid;
-    InitGrid(grid, 5);
-    DisplayGrid(grid);
-    cout << "choisissez la position de la ligne (entre 0 et 4)" << endl;
-    cin >> pos.abs;
-    cout << "choisissez la position de la ligne (entre 0 et 4)" << endl;
-    cin >> pos.ord;
-    cout << "choisissez la direction de déplacement (haut = z, bas = s, gauche = q, droite = d" << endl;
-    cin >> direction;
-    makeAMove(grid, pos , direction);
-    DisplayGrid(grid);
+    unsigned score = 0;
+
+    initGrid(grid, taille);
+
+    for (unsigned coup = 1; coup <= maxCoups; ++coup) {
+        displayGrid(grid);
+
+        cout << "Coup " << coup << "/" << maxCoups << endl;
+        cout << "Score :" << score << endl << endl;
+
+        cout << "Ligne (0-" << taille-1<<") : ";
+        cin >> pos.abs;
+
+        cout << "Colonne (0-" << taille-1<<") : ";
+        cin >> pos.ord;
+
+        cout << "Deplacement (z=haut, s=bas, q=gauche, d=droite) : ";
+        cin >> direction;
+
+        makeAMove(grid, pos, direction);
+
+        displayGrid(grid);
+
+        unsigned howMany;
+
+        if(atLeastThreeInAColumn(grid, pos, howMany)){
+            cout << "Alignement vertical détecté !" << endl;
+            removalInColumn(grid, pos, howMany);
+            score += howMany;
+        }
+        else if(atLeastThreeInARow(grid, pos, howMany)){
+            cout << "Alignement horizontal détecté !" << endl;
+            removalInRow(grid, pos, howMany);
+            score += howMany;
+        }
+        else{
+            cout << "Aucun alignement." << endl;
+        }
+
+        displayGrid(grid);
+        cout << "Appuyez sur entree pour continuer";
+        cin.ignore();
+        cin.get();
+    }
+    displayGrid(grid);
+
+    cout << "Partie terminée !" << endl;
+    cout << "Score Final : " << score << endl;
+
     return 0;
 }
