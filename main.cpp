@@ -293,6 +293,7 @@ int main() {
         cout << "Niveau 1" << endl;
         cout << "Bonjour jeune chevalier le royaume est attaqué par des bonbons maléfique" << endl;
         cout << "éliminez 10 bonbons pour avancer" << endl;
+        cout << "Appuyez sur entree pour continuer";
         cin.ignore();
         cin.get();
 
@@ -331,9 +332,6 @@ int main() {
             }
 
             displayGrid(grid);
-            cout << "Appuyez sur entree pour continuer";
-            cin.ignore();
-            cin.get();
         }
 
         if (score < 10){
@@ -353,6 +351,7 @@ int main() {
         cout << "Niveau 2" << endl;
         cout << "Vous entrez dans la forêt quand soudain un essaim de bonbons maléfiques " << endl << "vous sautent dessus !" << endl;
         cout << "éliminez 20 bonbons pour avancer" << endl;
+        cout << "Appuyez sur entree pour continuer"<< endl;
         cin.ignore();
         cin.get();
 
@@ -391,9 +390,6 @@ int main() {
             }
 
             displayGrid(grid);
-            cout << "Appuyez sur entree pour continuer"<< endl;
-            cin.ignore();
-            cin.get();
         }
 
         if (score < 20){
@@ -451,9 +447,6 @@ int main() {
             }
 
             displayGrid(grid);
-            cout << "Appuyez sur entree pour continuer";
-            cin.ignore();
-            cin.get();
         }
 
         if (score < 30){
