@@ -229,11 +229,11 @@ const unsigned KImpossible = 0;
         grid[i][col] = KImpossible;
     }
 
-    for (unsigned i = pos.abs + howMany; i < grid.size(); ++i) {
+    for (int i = pos.abs + howMany; i >= 0; --i) {
         unsigned k = i;
-        while (k > 0 && grid[k - 1][col] == KImpossible) {
-            swap(grid[k][col], grid[k - 1][col]);
-            k = k - 1;
+        while (k + 1 < grid.size() && grid[k + 1][col] == KImpossible) {
+            swap(grid[k][col], grid[k + 1][col]);
+            k = k + 1;
         }
     }
 }
