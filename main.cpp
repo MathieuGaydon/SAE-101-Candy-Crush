@@ -1,3 +1,14 @@
+/**
+ * @file main.cpp
+ * @author ---
+ * @date 2025
+ * @brief Jeu Candy Crush simplifié en C++ (terminal)
+ *
+ * Implémentation d’un jeu de type Candy Crush jouable en console,
+ * avec plusieurs modes de jeu, gestion des scores et affichage coloré.
+ */
+
+
 #include <iostream>
 #include <vector>
 #include <iomanip>
@@ -8,37 +19,64 @@
 
 using namespace std;
 
+/**
+ * @brief Efface l'écran du terminal
+ */
 void clearScreen () {
     cout << "\033[H\033[2J";
 }
 
+/** Réinitialise les couleurs */
 const unsigned KReset   (0);
+/** Fond noir */
 const unsigned KNoir    (40);
+/** Fond rouge */
 const unsigned KRouge   (41);
+/** Fond vert */
 const unsigned KVert    (42);
+/** Fond jaune */
 const unsigned KJaune   (43);
+/** Fond bleu */
 const unsigned KBleu    (44);
+/** Fond magenta */
 const unsigned KMagenta (45);
+/** Fond cyan */
 const unsigned KCyan    (46);
 
+/**
+ * @brief Change la couleur du terminal
+ * @param coul Code couleur ANSI
+ */
 void couleur (const unsigned & coul) {
     cout << "\033[" << coul <<"m";
 }
 
+/** Représente une ligne de la grille */
 typedef vector<unsigned> line;
+/** Représente la grille du jeu */
 typedef vector<line>      mat;
+
 typedef pair<unsigned,unsigned> position;
-//position d'un case
+
+/**
+ * @struct maPosition
+ * @brief Position dans la grille
+ */
 struct maPosition {
     unsigned abs;
     unsigned ord;
 };
+
+/** Nombre de types de bonbons */
 const unsigned KNbCandies = 6;
-//case vide
+/** Valeur représentant une case vide */
 const unsigned KImpossible = 0;
 
-//affiche la grille du jeu
-void displayGrid(const mat & grid) {
+/**
+ * @brief Affiche la grille du jeu
+ * @param grid Grille à afficher
+ */
+ void displayGrid(const mat & grid) {
     clearScreen();
     couleur(KReset);
 
@@ -47,7 +85,7 @@ void displayGrid(const mat & grid) {
 
             if (cel < 1 || cel > KNbCandies) {
                 couleur(KNoir);
-                cout << setw(3) << "."; //case vide affiché par un point
+                cout << setw(3) << "."; 
                 couleur(KReset);
             }
             else {
@@ -70,8 +108,12 @@ void displayGrid(const mat & grid) {
     cout << endl;
 }
 
-//initialise la grille avec des valeurs
-void initGrid(mat & grid, const size_t & taille) {
+/**
+ * @brief Initialise la grille avec des valeurs aléatoires
+ * @param grid Grille du jeu
+ * @param taille Taille de la grille
+ */
+ void initGrid(mat & grid, const size_t & taille) {
     grid.resize(taille);
     for (size_t i = 0; i < taille; ++i) {
         grid[i].resize(taille);
@@ -82,8 +124,13 @@ void initGrid(mat & grid, const size_t & taille) {
 }
 
 
-//Effectue un déplacement de valeur dans la grille selon la position de la valeur et la direction souhaitée
-void makeAMove (mat & grid, const maPosition & pos, const char & direction){
+/**
+ * @brief Effectue un déplacement dans la grille
+ * @param grid Grille du jeu
+ * @param pos Position initiale
+ * @param direction Direction (z,s,q,d)
+ */
+ void makeAMove (mat & grid, const maPosition & pos, const char & direction){
     unsigned i = pos.abs;
     unsigned j = pos.ord;
     unsigned n = grid.size();
@@ -102,8 +149,15 @@ void makeAMove (mat & grid, const maPosition & pos, const char & direction){
     }
 }
 
-//Parcours chaque colonne de la grille pour savoir si il y a au moins 3 valeur identiques
-bool atLeastThreeInAColumn (const mat &grid, maPosition & pos, unsigned & howMany){
+
+/**
+ * @brief Détecte un alignement vertical
+ * @param grid Grille du jeu
+ * @param pos Position de départ
+ * @param howMany Nombre de cases alignées
+ * @return true si alignement trouvé
+ */
+ bool atLeastThreeInAColumn (const mat &grid, maPosition & pos, unsigned & howMany){
     unsigned n = grid.size();
 
     for (unsigned j = 0; j < n; ++j) {
@@ -129,8 +183,14 @@ bool atLeastThreeInAColumn (const mat &grid, maPosition & pos, unsigned & howMan
     return false;
 }
 
-//Même principe pour atLeastThreeInAColumn mais vérifie pour les lignes
-bool atLeastThreeInARow (const mat &grid, maPosition & pos, unsigned & howMany){
+/**
+ * @brief Détecte un alignement horizontal
+ * @param grid Grille du jeu
+ * @param pos Position de départ
+ * @param howMany Nombre de cases alignées
+ * @return true si alignement trouvé
+ */
+ bool atLeastThreeInARow (const mat &grid, maPosition & pos, unsigned & howMany){
     unsigned n = grid.size();
 
     for (unsigned i = 0; i < n; ++i) {
@@ -156,8 +216,13 @@ bool atLeastThreeInARow (const mat &grid, maPosition & pos, unsigned & howMany){
     return false;
 }
 
-//Supprime un alignement vertical et remplace les cases par des KImpossible puis fais une simulation de gravité
-void removalInColumn (mat &grid, const maPosition &pos, unsigned howMany) {
+/**
+ * @brief Supprime un alignement vertical
+ * @param grid Grille du jeu
+ * @param pos Position de départ
+ * @param howMany Nombre de cases à supprimer
+ */
+ void removalInColumn (mat &grid, const maPosition &pos, unsigned howMany) {
     unsigned col = pos.ord;
 
     for (unsigned i = pos.abs; i < pos.abs + howMany; ++i){
@@ -173,8 +238,13 @@ void removalInColumn (mat &grid, const maPosition &pos, unsigned howMany) {
     }
 }
 
-//Même principe que removalInColumn mais pour les lignes en réutilisant removalInColumn
-void removalInRow(mat & grid, const maPosition & pos, unsigned howMany){
+/**
+ * @brief Supprime un alignement horizontal
+ * @param grid Grille du jeu
+ * @param pos Position de départ
+ * @param howMany Nombre de cases à supprimer
+ */
+ void removalInRow(mat & grid, const maPosition & pos, unsigned howMany){
     for (unsigned j = 0; j < howMany; ++j) {
         maPosition p;
         p.abs = pos.abs;
@@ -184,8 +254,12 @@ void removalInRow(mat & grid, const maPosition & pos, unsigned howMany){
     }
 }
 
-//Menu principal qui permet la séléction du mode de jeux que on veux jouer
-unsigned menuPrincipal(){
+
+/**
+ * @brief Menu principal
+ * @return Mode choisi
+ */
+ unsigned menuPrincipal(){
     unsigned choix;
 
     clearScreen();
@@ -200,8 +274,11 @@ unsigned menuPrincipal(){
     return choix;
 }
 
-//Menu de sélection de difficulté pour le mode classique
-unsigned choisirTailleGrille(){
+/**
+ * @brief Choix de la taille de la grille
+ * @return Taille sélectionnée
+ */
+ unsigned choisirTailleGrille(){
     unsigned choix;
 
     clearScreen();
@@ -214,18 +291,21 @@ unsigned choisirTailleGrille(){
 
     switch(choix){
     case 1:
-        return 5; //Retourne la taille de la grille pour plus de lisibilté
+        return 5; /** Retourne la taille de la grille pour plus de lisibilté */
     case 2:
-        return 7; //Retourne la taille de la grille pour plus de lisibilté
+        return 7; /** Retourne la taille de la grille pour plus de lisibilté */
     case 3:
-        return 9; //Retourne la taille de la grille pour plus de lisibilté
+        return 9; /** Retourne la taille de la grille pour plus de lisibilté */
     default:
         return 5;
     }
 }
 
-//Permet de lire le fichier "score.txt" ou est stocké le meilleur score pour le mode classé
-unsigned lireMeilleurScore(){
+/**
+ * @brief Lit le meilleur score
+ * @return Score enregistré
+ */
+ unsigned lireMeilleurScore(){
     ifstream fichier ("score.txt");
     unsigned score = 0;
 
@@ -236,42 +316,48 @@ unsigned lireMeilleurScore(){
     return score;
 }
 
-//Permet de remplacer l'ancien meilleur score par le nouveau meilleur score
-void sauvegarderMeilleurScore(unsigned int score) {
+/**
+ * @brief Sauvegarde le meilleur score
+ * @param score Score à sauvegarder
+ */
+ void sauvegarderMeilleurScore(unsigned int score) {
     ofstream fichier("score.txt");
     fichier<< score;
 }
 
-
+/**
+ * @brief Fonction principale
+ * @return Code de fin
+ */
 int main() {
-    //Permet d'avoir une grille aléatoire
+    /** Permet d'avoir une grille aléatoire */
     srand(time(0));
-    //Varaibles global
+    /** Varaibles global */
     unsigned taille;
     unsigned maxCoups;
     unsigned mode = menuPrincipal();
     char direction;
-    //Variables lié au score
+    /** Variables lié au score */
     unsigned score = 0;
     unsigned scoreJ1 = 0;
     unsigned scoreJ2 = 0;
 
     unsigned joueurActuel = 1;
-    //Grille
+    /** Grille */
     mat grid;
     maPosition pos;
 
-    //Choix du mode de jeu
+    /** Choix du mode de jeu */
     if (mode == 1 ){
-        taille= choisirTailleGrille(); //Choix de la difficulté du mode classique
-        if (taille == 5){ //Facile
+        taille= choisirTailleGrille(); /** Choix de la difficulté du mode classique */
+        if (taille == 5){ /** Facile */
             maxCoups =10;
         }
-        else if (taille==7){ //Normal
+        else if (taille==7){ /** Normal */
             maxCoups = 15;
         }
         else {
-            maxCoups = 20; //Difficile
+            maxCoups = 20; /** Difficile */
         }
     }
     else if (mode == 2){
@@ -282,9 +368,9 @@ int main() {
         taille = 7;
         maxCoups = 20;
     }
-    else if (mode ==4){ //Mode histoire
+    else if (mode ==4){ /** Mode histoire */
 
-        //Niveau 1
+        /** Niveau 1 */
         taille = 5;
         maxCoups = 5;
         score = 0;
@@ -342,7 +428,7 @@ int main() {
             cout << "Merci jeune chevalier si vous voulez combattre les force du mal passer par la forêt juste là-bas" << endl;
         }
 
-        //Niveau 2
+        /** Niveau 2 */
         taille = 7;
         maxCoups = 10;
         score = 0;
@@ -400,7 +486,7 @@ int main() {
             cout << "Vous avez battu ces bonbons vous n'êtes qu'à quelque pas du château maléfique" << endl;
         }
 
-        //Niveau 3
+        /** Niveau 3 */
         taille = 9;
         maxCoups = 15;
         score = 0;
@@ -461,12 +547,12 @@ int main() {
 
 
     initGrid(grid, taille);
-    //Boucle principal de jeu (quasiment pareil pour le mode histoire)
+    /** Boucle principal de jeu (quasiment pareil pour le mode histoire) */
     for (unsigned coup = 1; coup <= maxCoups; ++coup) {
         displayGrid(grid);
 
         cout << "Coup " << coup << "/" << maxCoups << endl;
-        if (mode == 3){ //Selon le mode de jeu on affiche les scores des deux joueurs ou du joueur
+        if (mode == 3){ /** Selon le mode de jeu on affiche les scores des deux joueurs ou du joueur */
             cout << "Tour du joueur : " << joueurActuel << endl;
             cout << "Score du joueur 1 : " << scoreJ1 << " / Score joueur 2 : " << scoreJ2 << endl;
         }
@@ -504,9 +590,9 @@ int main() {
             alignement = false;
         }
 
-        //Permet de faire une fois l'ajout des points selon les deux modes
+        /** Permet de faire une fois l'ajout des points selon les deux modes */
         if (alignement){
-            if (mode == 3){ //Si mode 1vs1 on ajoute au joueur qui a joué
+            if (mode == 3){ /** Si mode 1vs1 on ajoute au joueur qui a joué */
                 if (joueurActuel == 1){
                     scoreJ1 = scoreJ1 + howMany;
                 }
@@ -515,14 +601,14 @@ int main() {
                 }
             }
             else {
-                score = score + howMany; //Sinon on ajoute au joueur global (classique ou classé)
+                score = score + howMany; /** Sinon on ajoute au joueur global (classique ou classé) */
             }
         }
         else{
             cout << "Aucun alignement." << endl;
         }
 
-        //Changement du tour du joueur pour le mode 1vs1
+        /** Changement du tour du joueur pour le mode 1vs1 */
         if(mode == 3){
             if (joueurActuel == 1){
                 joueurActuel = 2;
@@ -540,11 +626,11 @@ int main() {
     displayGrid(grid);
 
     cout << "Partie terminée !" << endl;
-    //Affichage des score selon le mode de jeux
+    /** Affichage des score selon le mode de jeux */
     if(mode ==3){
-        cout << "Score joueur 1 : " << scoreJ1 << endl; //Affiche le score du joueur 1
-        cout << "Score joueur 2 : " << scoreJ2 << endl; //Affiche le score du joueur 2
-        //Vérifie qui des deux joueurs à remporter la partie
+        cout << "Score joueur 1 : " << scoreJ1 << endl; /** Affiche le score du joueur 1 */
+        cout << "Score joueur 2 : " << scoreJ2 << endl; /** Affiche le score du joueur 2 */
+        /** Vérifie qui des deux joueurs à remporter la partie */
         if (scoreJ1 > scoreJ2){
             cout << "Victoire du joueur 1 !" << endl;
         }
@@ -556,10 +642,10 @@ int main() {
         }
     }
     else{
-        cout << "Score Final : " << score << endl; //Affichage du score pour le mode classique ou le mode classé
+        cout << "Score Final : " << score << endl; /** Affichage du score pour le mode classique ou le mode classé */
     }
 
-    //Pour le mode classé on vérifie le meilleur score enregistrée
+    /** Pour le mode classé on vérifie le meilleur score enregistrée */
     if (mode ==2 ) {
         unsigned bestScore = lireMeilleurScore();
         if (score > bestScore){

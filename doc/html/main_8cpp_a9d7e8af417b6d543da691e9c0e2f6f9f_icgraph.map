@@ -1,0 +1,14 @@
+<map id="clearScreen" name="clearScreen">
+<area shape="rect" id="Node000001" title="Efface l&#39;écran du terminal." alt="" coords="270,81,360,107"/>
+<area shape="rect" id="Node000002" href="$main_8cpp.html#a3992a5792dbe01d0a17f61b609efc0f3" title="Choix de la taille de la grille." alt="" coords="103,5,222,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="271,75,190,34,190,29,276,73"/>
+<area shape="rect" id="Node000003" href="$main_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4" title="Fonction principale." alt="" coords="5,81,55,107"/>
+<area shape="poly" id="edge5_Node000001_Node000003" title=" " alt="" coords="254,97,55,97,55,92,255,92"/>
+<area shape="rect" id="Node000004" href="$main_8cpp.html#ac0aacda61353cef121ada8614de65a16" title="Affiche la grille du jeu." alt="" coords="119,107,206,132"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="252,105,207,115,205,110,257,103"/>
+<area shape="rect" id="Node000005" href="$main_8cpp.html#ab4ca8d56f66f43c4ae0bd97c7fd20724" title="Menu principal." alt="" coords="111,156,214,182"/>
+<area shape="poly" id="edge6_Node000001_Node000005" title=" " alt="" coords="281,114,223,147,199,158,197,153,221,142,275,116"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="121,41,104,52,54,83,51,79,101,48,125,37"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="102,110,55,101,55,96,106,107"/>
+<area shape="poly" id="edge7_Node000005_Node000003" title=" " alt="" coords="108,149,101,147,47,110,48,105,104,143,113,149"/>
+</map>

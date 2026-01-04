@@ -1,0 +1,8 @@
+<map id="removalInColumn" name="removalInColumn">
+<area shape="rect" id="Node000001" title="Supprime un alignement vertical." alt="" coords="256,5,379,31"/>
+<area shape="rect" id="Node000002" href="$main_8cpp.html#ae66f6b31b5ad750f1fe042a706a4e3d4" title="Fonction principale." alt="" coords="5,5,55,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="240,21,55,21,55,16,241,16"/>
+<area shape="rect" id="Node000003" href="$main_8cpp.html#a4e37bf8b2ef1042c1631bf9d394ebd0d" title="Supprime un alignement horizontal." alt="" coords="103,31,208,56"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="243,30,209,38,208,33,238,31"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="85,31,55,26,55,20,90,29"/>
+</map>
